@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceamback.project.goods.mapper.BrandMapper">
+
+    <resultMap id="BrandResult" type="Brand">
+        <id property="brandId" column="brand_id" />
+        <result property="brandName" column="brand_name" />
+        <result property="brandPic" column="brand_pic" />
+        <result property="brief" column="brief" />
+        <result property="seq" column="seq" />
+        <result property="status" column="status" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="firstChar" column="first_char" />
+        <result property="isNew" column="is_new" />
+    </resultMap>
+
+    <select id="selectBrandList" resultMap="BrandResult" parameterType="Brand">
+        select * from goods_brand
+        <where>
+            <if test="brandName != null and brandName != ''">
+                and brand_name like concat('%',#{brandName},'%')
+            </if>
+            <if test="firstChar != null and firstChar != ''">
+                and first_char = #{firstChar}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBrandById" resultMap="BrandResult">
+        select * from goods_brand
+        <where>
+            <if test="brandId != null">
+                and brand_id = #{brandId}
+            </if>
+        </where>
+    </select>
+
+    <select id="checkBrandNameUnique" parameterType="String" resultType="int">
+        select count(1) from goods_brand where brand_name = #{brandName}
+    </select>
+
+    <insert id="insertBrand" parameterType="Brand">
+        insert into goods_brand(
+            <if test="brandName != null and brandName != ''">brand_name,</if>
+            <if test="brandPic != null and brandPic != ''">brand_pic,</if>
+            <if test="status != null">status,</if>
+            <if test="brief != null and brief != ''">brief,</if>
+            <if test="firstChar != null and firstChar != ''">first_char,</if>
+            <if test="seq != null and seq != ''">seq,</if>
+            <if test="isNew != null">is_new,</if>
+            create_time
+        )values (
+            <if test="brandName != null and brandName != ''">#{brandName},</if>
+            <if test="brandPic != null and brandPic != ''">#{brandPic},</if>
+            <if test="status != null">#{status},</if>
+            <if test="brief != null and brief != ''">#{brief},</if>
+            <if test="firstChar != null and firstChar != ''">#{firstChar},</if>
+            <if test="seq != null and seq != ''">#{seq},</if>
+            <if test="isNew != null">#{isNew},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateBrand" parameterType="Brand">
+        update goods_brand
+        <set>
+            <if test="brandName != null and brandName != ''">brand_name = #{brandName},</if>
+            <if test="brandPic != null and brandPic != ''">brand_pic = #{brandPic},</if>
+            <if test="status != null">status =  #{status},</if>
+            <if test="brief != null and brief != ''">brief = #{brief},</if>
+            <if test="firstChar != null and firstChar != ''">first_char = #{firstChar},</if>
+            <if test="seq != null and seq != ''">seq = #{seq},</if>
+            <if test="isNew != null">is_new = #{isNew},</if>
+            update_time = sysdate()
+        </set>
+        where brand_id = #{brandId}
+    </update>
+
+    <delete id="deleteBrandById" parameterType="Long">
+        delete from goods_brand where brand_id = #{brandId}
+    </delete>
+
+    <delete id="deleteBrandByIds" parameterType="Long">
+        delete from goods_brand where brand_id in
+        <foreach collection="array" item="brandId" open="(" separator="," close=")">
+            #{brandId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceamback.project.goods.mapper.SpecificationOptionMapper">
+
+    <resultMap id="baseResultMap" type="SpecificationOption">
+        <id property="id" column="id" javaType="Long"/>
+        <result property="optionName" column="option_name" javaType="String"/>
+
+        <association property="specification" column="spec_id">
+            <id property="id" column="id" javaType="Long"/>
+            <result property="specName" column="spec_name" javaType="String"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertOptions" parameterType="SpecificationOption">
+        insert into goods_specification_option(option_name,spec_id)values (#{optionName},#{specification.id})
+    </insert>
+
+    <update id="updateOptions" parameterType="SpecificationOption">
+        update goods_specification_option
+        <set>
+            <if test="optionName != null and optionName != ''">option_name = #{optionName},</if>
+            id = #{specification.id}
+        </set>
+    </update>
+
+    <delete id="deleteSpecOptionBySpecId" parameterType="Long">
+        delete from goods_specification_option where spec_id = #{specId}
+    </delete>
+
+    <delete id="deleteSpecOptionBySpecIds" parameterType="Long">
+        delete from goods_specification_option where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSpecOptionById" parameterType="Long">
+        delete from goods_specification_option where id = #{id}
+    </delete>
+
+    <delete id="deleteSpecOptionByIds" parameterType="Long">
+        delete from goods_specification_option where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

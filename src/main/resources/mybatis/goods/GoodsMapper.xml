@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceamback.project.goods.mapper.GoodsMapper">
+
+    <resultMap id="GoodsResult" type="Goods">
+        <result property="id" column="id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="cate_name"/>
+        <result property="goodsSn" column="goods_sn"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="brandName" column="brand_name"/>
+        <result property="typeId" column="type_id"/>
+        <result property="typeName" column="type_name"/>
+        <result property="keywords" column="keywords"/>
+        <result property="brief" column="brief"/>
+        <result property="goodsDesc" column="goods_desc"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="oriPrice" column="ori_price"/>
+        <result property="price" column="price"/>
+        <result property="isNew" column="is_new"/>
+        <result property="goodsUnit" column="goods_unit"/>
+        <result property="pic" column="pic"/>
+        <result property="img" column="img"/>
+        <result property="soldNum" column="sold_num"/>
+        <result property="totalStocks" column="total_stocks"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="isHot" column="is_hot"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createUserDeptId" column="create_user_dept_id"/>
+        <result property="updateUserId" column="update_user_id"/>
+    </resultMap>
+
+    <select id="selectList" resultMap="GoodsResult">
+        SELECT
+        a.*,
+        b.cate_name,
+        c.brand_name,
+        d.type_name
+        FROM goods_prod a
+        LEFT JOIN goods_category b ON a.category_id = b.id
+        LEFT JOIN goods_brand c ON a.brand_id = c.brand_id
+        LEFT JOIN goods_type d ON a.type_id = d.type_id
+        <where>
+            <if test="goodsName !=null and goodsName != ''">goods_name = #{goodsName}</if>
+        </where>
+    </select>
+
+    <select id="selectGoodsById" resultMap="GoodsResult">
+        select * from goods_prod where id = #{id}
+    </select>
+
+    <!--使用<if test="">，当某些参数不存在时，会导致存在的参数后面多了逗号，可用使用<trim>将它们去除-->
+    <insert id="add" parameterType="Goods">
+        insert into goods_prod
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="categoryId != null">`category_id`,</if>
+        <if test="goodsSn != null and goodsSn !=''">`goods_sn`,</if>
+        <if test="goodsName != null and goodsName !=''">`goods_name`,</if>
+        <if test="brandId != null">`brand_id`,</if>
+        <if test="typeId != null">`type_id`,</if>
+        <if test="brief != null and brief !=''">`brief`,</if>
+        <if test="goodsDesc != null and goodsDesc !=''">`goods_desc`,</if>
+        <if test="status != null">`status`,</if>
+        create_time,
+        <if test="oriPrice != null and oriPrice !=''">`ori_price`,</if>
+        <if test="price != null and price !=''">`price`,</if>
+        <if test="isNew != null and isNew !=''">`is_new`,</if>
+        <if test="goodsUnit != null and goodsUnit !=''">`goods_unit`,</if>
+        <if test="pic != null and pic !=''">`pic`,</if>
+        <if test="img != null and img !=''">`img`,</if>
+        <if test="totalStocks != null and totalStocks !=''">total_stocks,</if>
+        <if test="soldNum != null and soldNum !=''">`sold_num`,</if>
+        <if test="isHot != null and isHot !=''">`is_hot`,</if>
+        <if test="marketPrice != null and marketPrice !=''">`market_price`,</if>
+        <if test="createUserId != null and createUserId !=''">`create_user_id`,</if>
+        <if test="createUserDeptId != null and createUserDeptId !=''">`create_user_dept_id`,</if>
+        <if test="updateUserId != null and updateUserId !=''">`update_user_id`</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="categoryId != null and categoryId !=''">#{categoryId},</if>
+        <if test="goodsSn != null and goodsSn !=''">#{goodsSn},</if>
+        <if test="goodsName != null and goodsName !=''">#{goodsName},</if>
+        <if test="brandId != null">#{brandId},</if>
+        <if test="typeId != null">#{typeId},</if>
+        <if test="brief != null and brief !=''">#{brief},</if>
+        <if test="goodsDesc != null and goodsDesc !=''">#{goodsDesc},</if>
+        <if test="status != null">#{status},</if>
+        sysdate(),
+        <if test="oriPrice != null and oriPrice !=''">#{oriPrice},</if>
+        <if test="price != null and price !=''">#{price},</if>
+        <if test="isNew != null and isNew !=''">#{isNew},</if>
+        <if test="goodsUnit != null and goodsUnit !=''">#{goodsUnit},</if>
+        <if test="pic != null and pic !=''">#{pic},</if>
+        <if test="img != null and img !=''">#{img},</if>
+        <if test="totalStocks != null and totalStocks !=''">#{totalStocks},</if>
+        <if test="soldNum != null and soldNum !=''">#{soldNum},</if>
+        <if test="isHot != null and isHot !=''">#{isHot},</if>
+        <if test="marketPrice != null and marketPrice !=''">#{marketPrice},</if>
+        <if test="createUserId != null and createUserId !=''">#{createUserId},</if>
+        <if test="createUserDeptId != null and createUserDeptId !=''">#{createUserDeptId},</if>
+        <if test="updateUserId != null and updateUserId !=''">#{updateUserId}</if>
+        </trim>
+    </insert>
+
+    <update id="edit" parameterType="Goods">
+        update goods_prod
+        <set>
+            <trim suffixOverrides=",">
+                <if test="categoryId != null">category_id = #{categoryId},</if>
+                <if test="goodsSn != null and goodsSn !=''">goods_sn = #{goodsSn},</if>
+                <if test="goodsName != null and goodsName !=''">goods_name = #{goodsName},</if>
+                <if test="brandId != null">brand_id = #{brandId},</if>
+                <if test="typeId != null">type_id = #{typeId},</if>
+                <if test="brief != null and brief !=''">brief = #{brief},</if>
+                <if test="goodsDesc != null and goodsDesc !=''">goods_desc = #{goodsDesc},</if>
+                <if test="status != null">status = #{status},</if>
+                create_time = sysdate(),
+                <if test="oriPrice != null and oriPrice !=''">ori_price = #{oriPrice},</if>
+                <if test="price != null and price !=''">price = #{price},</if>
+                <if test="isNew != null and isNew !=''">is_new = #{isNew},</if>
+                <if test="goodsUnit != null and goodsUnit !=''">goods_unit = #{goodsUnit},</if>
+                <if test="pic != null and pic !=''">pic = #{pic},</if>
+                <if test="img != null and img !=''">img = #{img},</if>
+                <if test="totalStocks != null and totalStocks !=''">total_stocks = #{totalStocks},</if>
+                <if test="soldNum != null and soldNum !=''">sold_num = #{soldNum},</if>
+                <if test="isHot != null and isHot !=''">is_hot = #{isHot},</if>
+                <if test="marketPrice != null and marketPrice !=''">market_price = #{marketPrice},</if>
+                <if test="createUserId != null and createUserId !=''">create_user_id = #{createUserId},</if>
+                <if test="createUserDeptId != null and createUserDeptId !=''">create_user_dept_id = #{createUserDeptId},</if>
+                <if test="updateUserId != null and updateUserId !=''">update_user_id = #{updateUserId}</if>
+            </trim>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from goods_prod where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds">
+        delete from goods_prod where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

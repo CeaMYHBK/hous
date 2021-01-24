@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceamback.project.goods.mapper.TypeMapper">
+
+    <resultMap id="TypeResult" type="Type">
+        <id property="typeId" column="type_id" />
+        <result property="typeName" column="type_name" />
+        <result property="enable" column="enable" />
+    </resultMap>
+
+    <select id="selectTypeList" parameterType="Type" resultMap="TypeResult">
+        select * from goods_type
+        <where>
+            <if test="typeName != null and typeName != ''">
+                and type_name = #{typeName}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTypeById" parameterType="Long" resultMap="TypeResult">
+        select * from goods_type where type_id = #{typeId}
+    </select>
+
+    <select id="checkTypeNameUnique" parameterType="String" resultType="int">
+        select count(1) from goods_type where type_name = #{typeName}
+    </select>
+
+    <insert id="insertType" parameterType="Type">
+        insert into goods_type(type_name,enable)values (#{typeName},#{enable}
+        )
+    </insert>
+
+    <update id="updateType" parameterType="Type">
+        update goods_type
+        <set>
+            <if test="typeName != null and typeName != ''">type_name = #{typeName},</if>
+            <if test="enable != null and enable != ''">enable = #{enable}</if>
+        </set>
+        where type_id = #{typeId}
+    </update>
+
+    <delete id="deleteTypeById" parameterType="Long">
+        delete from goods_type where type_id = #{typeId}
+    </delete>
+
+    <delete id="deleteTypeByIds" parameterType="Long">
+        delete from goods_type where type_id in
+        <foreach collection="array" item="typeId" open="(" separator="," close=")">
+            #{typeId}
+        </foreach>
+    </delete>
+
+</mapper>

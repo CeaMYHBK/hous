@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceamback.project.ck.mapper.DefinitionMapper">
+
+    <resultMap id="Result" type="Definition">
+        <id property="id" column="id" />
+        <result property="code" column="code" />
+        <result property="name" column="name" />
+        <result property="prop" column="prop" />
+    </resultMap>
+
+    <select id="selectList" resultMap="Result" parameterType="Definition">
+        select * from ck_definition
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectById" resultMap="Result">
+        select * from ck_definition
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="Definition">
+        insert into ck_definition(
+        <if test="code != null and code != ''">code,</if>
+        <if test="name != null and name != ''">name,</if>
+        <if test="prop != null">prop</if>
+        )values (
+        <if test="code != null and code != ''">#{code},</if>
+        <if test="name != null and name != ''">#{name},</if>
+        <if test="prop != null">#{prop}</if>
+        )
+    </insert>
+
+    <update id="update" parameterType="Definition">
+        update ck_definition
+        <set>
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="prop != null">prop = #{prop}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Integer">
+        delete from ck_definition where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="Integer">
+        delete from ck_definition where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

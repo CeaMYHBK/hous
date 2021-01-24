@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceamback.project.ck.mapper.OutMapper">
+
+    <resultMap id="Result" type="Out">
+        <id property="id" column="id" />
+        <result property="goods" column="goods" />
+        <result property="definitionId" column="definition_id" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="ckName" column="name" />
+    </resultMap>
+
+    <select id="selectList" resultMap="Result" parameterType="Out">
+        SELECT
+            t.*,
+            d.name
+        FROM ck_out t
+        LEFT JOIN ck_definition d ON d.id = t.definition_id
+    </select>
+
+    <select id="selectById" resultMap="Result">
+        select * from ck_out
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="Out">
+        insert into ck_out(
+        <if test="goods != null">goods,</if>
+        <if test="definitionId != null">definition_id,</if>
+        <if test="createBy != null">create_by,</if>
+        create_time
+        )values (
+        <if test="goods != null">#{goods},</if>
+        <if test="definitionId != null">#{definitionId},</if>
+        <if test="createBy != null">#{createBy},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="update" parameterType="Out">
+        update ck_out
+        <set>
+            <if test="definitionId != null">definition_id = #{definitionId},</if>
+            <if test="createBy != null">create_by = #{createBy}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Integer">
+        delete from ck_out where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="Integer">
+        delete from ck_out where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

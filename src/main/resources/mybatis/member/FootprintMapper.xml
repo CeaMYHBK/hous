@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceamback.project.member.mapper.FootprintMapper">
+
+    <resultMap id="FootprintResult" type="Footprint">
+        <id property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="userName" column="user_name" />
+        <result property="goodsId" column="goods_id" />
+        <result property="goodsName" column="goods_name" />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <select id="selectFootprintList" parameterType="Footprint" resultMap="FootprintResult">
+        select a.*,b.user_name,c.goods_name
+        from member_footprint a
+        left join sys_user b on a.user_id = b.user_id
+        left join goods_prod c on a.goods_id = c.id
+        <where>
+            <if test="id != null and id != ''">id = #{id}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="Footprint">
+		insert into member_footprint
+		(
+			`user_id`,
+			`goods_id`,
+			`create_time`
+		)
+		values
+		(
+			#{userId},
+			#{goodsId},
+			sysdate()
+		)
+	</insert>
+
+    <update id="update" parameterType="Footprint">
+        update member_footprint
+        <set>
+            <if test="userId != null">`user_id` = #{userId},</if>
+            <if test="goodsId != null">`goods_id` = #{goodsId},</if>
+            `create_time` = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+		delete from member_footprint where id = #{id}
+	</delete>
+
+    <delete id="deleteByIds">
+        delete from member_footprint where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
