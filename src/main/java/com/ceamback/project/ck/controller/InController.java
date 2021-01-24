@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ck/in")
+@RequestMapping("/ck/in") //url命名规则：/模块/子模块
 public class InController extends BaseController {
 
     @Autowired
